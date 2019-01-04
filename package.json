@@ -1,0 +1,27 @@
+{
+  "name": "pms",
+  "version": "1.0.0",
+  "description": "Population Management System",
+  "main": "api/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon api/app.js",
+    "start": "node api/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/larrystone/PMS.git"
+  },
+  "author": "Larrystone Yakov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/larrystone/PMS/issues"
+  },
+  "homepage": "https://github.com/larrystone/PMS#readme",
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  }
+}
