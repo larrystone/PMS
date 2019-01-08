@@ -1,17 +1,15 @@
-// import express from 'express';
-const express = require('express');
+import bodyParser from 'body-parser';
+import express from 'express';
+import routes from './routes';
+import { PORT } from './configs';
 
 const app = express();
 
-app.get('/', (_req, res) => {
-  res.send('Welcome to the Population Management System!');
-});
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-app.get('/ping', (_req, res) => {
-  res.status(200).json('PONG!');
-});
+app.use(routes);
 
-app.listen(3000, () => {
-  console.log('App is live on PORT:' + 3000);
+app.listen(PORT, () => {
+  console.log('App is live on PORT:', PORT);
 });
-
