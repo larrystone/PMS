@@ -14,19 +14,28 @@ export default (sequelize, DataTypes) => {
         },
       },
     },
+    male: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
+    female: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+    },
     subLocationId: {
       type: DataTypes.INTEGER,
       references: {
         model: 'Locations',
         key: 'id',
-        as: 'subLocationId',
       },
     },
   });
 
   Location.associate = (models) => {
-    Location.hasOne(models.Location, {
-      foreignKey: 'subLocationId',
+    Location.belongsTo(models.Location, {
+      as: 'subLocation',
     });
   };
 
