@@ -32,6 +32,7 @@ module.exports = {
     },
     subLocationId: {
       type: Sequelize.INTEGER,
+      onDelete: 'SET NULL',
       references: {
         model: 'Locations',
         key: 'id',

@@ -26,6 +26,7 @@ export default (sequelize, DataTypes) => {
     },
     subLocationId: {
       type: DataTypes.INTEGER,
+      onDelete: 'SET NULL',
       references: {
         model: 'Locations',
         key: 'id',
