@@ -20,12 +20,22 @@ module.exports = {
         },
       },
     },
+    male: {
+      allowNull: false,
+      defaultValue: 0,
+      type: Sequelize.INTEGER,
+    },
+    female: {
+      allowNull: false,
+      defaultValue: 0,
+      type: Sequelize.INTEGER,
+    },
     subLocationId: {
       type: Sequelize.INTEGER,
+      onDelete: 'SET NULL',
       references: {
         model: 'Locations',
         key: 'id',
-        as: 'subLocationId',
       },
     },
     createdAt: {
