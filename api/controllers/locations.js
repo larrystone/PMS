@@ -17,19 +17,20 @@ class Locations {
 
     let include = {
       include: [
-        { model: Location, as: 'subLocation' },
+        {
+          model: Location,
+          as: 'subLocation',
+        },
       ],
     };
 
-    for (let k = 1; k < depth; k += 1) {
+    for (let i = 1; i < depth; i += 1) {
       include = {
-        include: [
-          {
-            model: Location,
-            as: 'subLocation',
-            ...include,
-          },
-        ],
+        include: [{
+          model: Location,
+          as: 'subLocation',
+          ...include,
+        }],
       };
     }
 
@@ -40,7 +41,10 @@ class Locations {
           ...include,
         });
       if (data) {
-        sendResponse(res, 200, data);
+        sendResponse(res, 200, {
+          message: 'Success!',
+          data,
+        });
       } else {
         sendResponse(res, 404, { message: 'Location not found' });
       }
@@ -57,14 +61,14 @@ class Locations {
     try {
       let { subLocationId } = req.body;
       if (subLocation) {
-        const { name: subName, ...rest } = subLocation;
-        const [{ id }] = await Location.findOrCreate({
+        const { name: subName, ...defaults } = subLocation;
+        const [data] = await Location.findOrCreate({
           where: {
             name: subName,
           },
-          defaults: { rest },
+          defaults,
         });
-        subLocationId = id;
+        subLocationId = data.id;
       }
       const [data, created] = await Location.findOrCreate({
         where: {
@@ -87,7 +91,6 @@ class Locations {
     const {
       name, male, female, subLocationId,
     } = body;
-
     const { id } = params;
 
     try {
@@ -95,31 +98,34 @@ class Locations {
         where: { id },
       });
 
-      const updatedLocation = await location.updateAttributes({
-        name, male, female, subLocationId,
-      });
+      if (!location) {
+        sendResponse(res, 404, { message: 'Location not found' });
+      } else {
+        const data = await location.updateAttributes({
+          name, male: Number.parseInt(male, 10), female: Number.parseInt(female, 10), subLocationId,
+        });
 
-      sendResponse(res, 200, { data: updatedLocation });
+        sendResponse(res, 200, {
+          message: 'Location updated',
+          data,
+        });
+      }
     } catch (err) {
       sendResponse(res, 500, { err });
     }
-
-    res.status(200).json({
-      message: 'All correct',
-    });
   }
 
   static async deleteLocation({ params }, res) {
     const { id } = params;
 
     try {
-      const data = await Location
+      const location = await Location
         .findOne({ where: { id } });
 
-      if (!data) {
+      if (!location) {
         sendResponse(res, 404, { message: 'Location not found' });
       } else {
-        await data.destroy();
+        await location.destroy();
         sendResponse(res, 200);
       }
     } catch (err) {

@@ -24,12 +24,26 @@ export default (sequelize, DataTypes) => {
       allowNull: false,
       defaultValue: 0,
     },
+    total: {
+      defaultValue: 0,
+      type: DataTypes.INTEGER,
+    },
     subLocationId: {
       type: DataTypes.INTEGER,
       onDelete: 'SET NULL',
       references: {
         model: 'Locations',
         key: 'id',
+      },
+    },
+  },
+  {
+    hooks: {
+      beforeCreate: (location) => {
+        location.total = Number.parseInt(location.male, 10) + Number.parseInt(location.female, 10); //eslint-disable-line
+      },
+      beforeUpdate: (location) => {
+        location.total = Number.parseInt(location.male, 10) + Number.parseInt(location.female, 10); //eslint-disable-line
       },
     },
   });
