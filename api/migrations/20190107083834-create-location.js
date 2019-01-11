@@ -30,6 +30,10 @@ module.exports = {
       defaultValue: 0,
       type: Sequelize.INTEGER,
     },
+    total: {
+      defaultValue: 0,
+      type: Sequelize.INTEGER,
+    },
     subLocationId: {
       type: Sequelize.INTEGER,
       onDelete: 'SET NULL',
