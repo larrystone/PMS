@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>PMS - Larrystone</title>
+</head>
+<body>
+<h4><center>Population management system API</center></h4>
+<table border="1" cellpadding="10">
+	<th>Path</th>
+    <th>Method</th>
+    <th>Description</th>
+    <th>Request <br/> Body</th>
+    <th>Request <br/> Parameters</th>
+    <th>Special Notes</th>
+    
+    <tr>
+    	<td><code>/locations</code></td>    	
+        <td>POST</td>
+        <td>Create new location</td>
+        <td>{ <br/> id: <code>int required</code>, <br/>name: <code>string required</code>, <br/> male: <code>int</code>, <br/> female: <code>int</code> <br/> subLocationId: <code>int</code>, <br/> subLocation: <code>object</code> <br/>}
+        </td>
+        <td><code>null</code></td>
+        <td>subLocation object must contain keys <strong>name, male and female</strong> (e.g subLocation: { name: 'Nigeria', male: 10, female: 20 }).<br/>When both <code>subLocation</code> and <code>subLocationId</code> are provided, subLocationId will be used after a validation check is passed
+        </td>
+    </tr>
+    <tr >
+    	<td><code>/locations</code></td>
+        <td>GET      </td>
+        <td>Get all locations</td>
+        <td><code>null</code></td> 
+        <td><code>null</code></td>
+        <td> None </td>
+    </tr>
+    <tr>
+    	<td><code>/locations/:id</code></td>
+        <td>GET</td>
+        <td>Get a single location record <br/> Supports nesting  </td>
+        <td>  <code>null</code> </td>
+        <td>  id: <code>int required</code> </td>
+        <td> By default a subLocation record will be returned with the data. An optional depth query (e.g <code>?depth=3</code>) can be added to list more than the default depth of 1. <br/> Please note that any depth request of more than 4 more will default the response to the max supported depth of 4
+        </td>
+    </tr>
+    <tr>
+    	<td><code>/locations/:id</code></td>
+        <td>PUT </td>
+        <td>Delete a location record  </td>
+        <td> { <br/> id: <code>int required</code>, <br/>name: <code>string required</code>, <br/> male: <code>int</code>, <br/> female: <code>int</code> <br/> subLocationId: <code>int</code> <br/>} </td>
+        <td> id: <code>int required</code> </td>
+        <td>  A valid <code>subLocationId</code> must be provided kvand must be present in the database.
+        </td>
+    </tr>
+    <tr>
+    	<td><code>/locations/:id</code></td>
+        <td>DELETE </td>
+        <td> Delete a location record</td>
+        <td><code>null</code>  </td>
+        <td>id: <code>int required</code></td>
+        <td>None</td>
+    </tr>
+</table>
+</body>
+</html>

@@ -12,6 +12,8 @@ app.use(bodyParser.json());
 
 app.use(routes);
 
+routes.use('/', express.static('./'));
+
 app.listen(PORT, () => {
   console.log('App is live on PORT:', PORT);
 });
