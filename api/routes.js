@@ -1,12 +1,13 @@
 import express from 'express';
 import Locations from './controllers/locations';
 import validateId from './middlewares/inputValidator';
+import validateSubLocationId from './middlewares/validateSubLocationId';
 
 const routes = express.Router();
 
 routes
   .route('/locations')
-  .post(Locations.createLocation)
+  .post(validateSubLocationId, Locations.createLocation)
   .get(Locations.getLocations);
 
 routes

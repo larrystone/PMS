@@ -56,8 +56,8 @@ class Locations {
     }
   }
 
-  static async createLocation({ body }, res) {
-    const parsedData = validateLocation(body);
+  static async createLocation(req, res) {
+    const parsedData = validateLocation(req.body);
     if (!parsedData) {
       sendResponse(res, 400, { message: 'Invalid location data provided!' });
     }
@@ -66,9 +66,9 @@ class Locations {
     } = parsedData;
 
     try {
-      let { subLocationId } = parsedData;
+      let { subLocationId } = req;
 
-      if (subLocation) {
+      if (!subLocationId && subLocation) {
         const parsedSubData = validateLocation(subLocation);
 
         if (!parsedSubData) {
@@ -102,14 +102,14 @@ class Locations {
     }
   }
 
-  static async updateLocation({ body, params }, res) {
+  static async updateLocation({ body, params, subLocationId }, res) {
     const parsedData = validateLocation(body);
     if (!parsedData) {
       sendResponse(res, 400, { message: 'Invalid location data provided!' });
     }
 
     const {
-      name, male, female, subLocationId,
+      name, male, female,
     } = parsedData;
 
     const { id } = params;
