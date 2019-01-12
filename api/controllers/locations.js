@@ -6,9 +6,9 @@ class Locations {
   static async getLocations(req, res) {
     try {
       const data = await Location.findAll();
-      sendResponse(res, 200, { message: 'Success', data });
+      return sendResponse(res, 200, { message: 'Success', data });
     } catch (err) {
-      sendResponse(res, 500, { err });
+      return sendResponse(res, 500, { err });
     }
   }
 
@@ -44,22 +44,21 @@ class Locations {
           ...include,
         });
       if (data) {
-        sendResponse(res, 200, {
+        return sendResponse(res, 200, {
           message: 'Success!. Max depth of 4 supported',
           data,
         });
-      } else {
-        sendResponse(res, 404, { message: 'Location not found' });
       }
+      return sendResponse(res, 404, { message: 'Location not found' });
     } catch (err) {
-      sendResponse(res, 500, { err });
+      return sendResponse(res, 500, { err });
     }
   }
 
   static async createLocation(req, res) {
     const parsedData = validateLocation(req.body);
     if (!parsedData) {
-      sendResponse(res, 400, { message: 'Invalid location data provided!' });
+      return sendResponse(res, 400, { message: 'Invalid location data provided!' });
     }
     const {
       name, male, female, subLocation,
@@ -72,15 +71,15 @@ class Locations {
         const parsedSubData = validateLocation(subLocation);
 
         if (!parsedSubData) {
-          sendResponse(res, 400, { message: 'Invalid sub location data provided!' });
+          return sendResponse(res, 400, { message: 'Invalid sub location data provided!' });
         }
 
-        const { name: subName, ...defaults } = parsedSubData;
+        const { name: subName, male: subMale, female: subFemale } = parsedSubData;
         const [data] = await Location.findOrCreate({
           where: {
             name: subName,
           },
-          defaults,
+          defaults: { male: subMale, female: subFemale },
         });
         subLocationId = data.id;
       }
@@ -93,24 +92,20 @@ class Locations {
           male, female, subLocationId,
         },
       });
-      sendResponse(res, 201, {
+      return sendResponse(res, created ? 201 : 409, {
         message: created ? 'New Location created' : 'Location already exist',
         data,
       });
     } catch (err) {
-      sendResponse(res, 500, { err });
+      return sendResponse(res, 500, { err });
     }
   }
 
   static async updateLocation({ body, params, subLocationId }, res) {
     const parsedData = validateLocation(body);
     if (!parsedData) {
-      sendResponse(res, 400, { message: 'Invalid location data provided!' });
+      return sendResponse(res, 400, { message: 'Invalid location data provided!' });
     }
-
-    const {
-      name, male, female,
-    } = parsedData;
 
     const { id } = params;
 
@@ -119,20 +114,23 @@ class Locations {
         where: { id },
       });
 
-      if (!location) {
-        sendResponse(res, 404, { message: 'Location not found' });
-      } else {
-        const data = await location.updateAttributes({
-          name, male: Number.parseInt(male, 10), female: Number.parseInt(female, 10), subLocationId,
-        });
+      const {
+        name, male, female,
+      } = parsedData;
 
-        sendResponse(res, 200, {
-          message: 'Location updated',
-          data,
-        });
+      if (!location) {
+        return sendResponse(res, 404, { message: 'Location not found' });
       }
+      const data = await location.updateAttributes({
+        name, male, female, subLocationId: subLocationId || location.subLocationId,
+      });
+
+      return sendResponse(res, 200, {
+        message: 'Location updated',
+        data,
+      });
     } catch (err) {
-      sendResponse(res, 500, { err });
+      return sendResponse(res, 500, { err });
     }
   }
 
@@ -144,13 +142,13 @@ class Locations {
         .findOne({ where: { id } });
 
       if (!location) {
-        sendResponse(res, 404, { message: 'Location not found' });
-      } else {
-        await location.destroy();
-        sendResponse(res, 200);
+        return sendResponse(res, 404, { message: 'Location not found' });
       }
+
+      await location.destroy();
+      return sendResponse(res, 200);
     } catch (err) {
-      sendResponse(res, 500, { err });
+      return sendResponse(res, 500, { err });
     }
   }
 }

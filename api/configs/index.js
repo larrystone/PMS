@@ -6,14 +6,18 @@ const { PORT } = process.env;
 
 const DATABASE = {
   development: {
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
+    username: process.env.DEV_DB_USERNAME,
+    password: process.env.DEV_DB_PASSWORD,
+    database: process.env.DEV_DB_DATABASE,
     host: process.env.DB_HOST,
     dialect: 'postgres',
   },
   test: {
-    use_env_variable: 'DATABASE_URL_TEST',
+    username: process.env.TEST_DB_USERNAME,
+    password: process.env.TEST_DB_PASSWORD,
+    database: process.env.TEST_DB_DATABASE,
+    host: process.env.DB_HOST,
+    dialect: 'postgres',
   },
   production: {
     use_env_variable: 'DATABASE_URL',

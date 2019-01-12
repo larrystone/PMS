@@ -15,3 +15,5 @@ app.use(routes);
 app.listen(PORT, () => {
   console.log('App is live on PORT:', PORT);
 });
+
+export default app;
