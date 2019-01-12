@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node build/app.js",
     "dev": "nodemon --watch api --exec babel-node -- api/app.js",
-    "build": "babel -d ./build ./api -s",
+    "heroku-postbuild": "babel -d ./build ./api -s",
     "test": "yarn pre-test && cross-env-shell NODE_ENV=test nyc mocha --timeout 500000 --require babel-core/register api/tests/controllers --exit",
     "pre-test": "cross-env NODE_ENV=test sequelize db:migrate:undo:all && cross-env NODE_ENV=test sequelize db:migrate"
   },
