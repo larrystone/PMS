@@ -18,7 +18,7 @@ export const validateLocation = (location) => {
   return {
     ...location,
     name: parsedName,
-    male: parsedMale || 0,
-    female: parsedFemale || 0,
+    male: parsedMale,
+    female: parsedFemale,
   };
 };

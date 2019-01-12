@@ -7,7 +7,7 @@ export default async (req, res, next) => {
 
   const parsedSubLocation = checkNumber(subLocationId);
   if (!parsedSubLocation) {
-    next();
+    return next();
   }
 
   try {
@@ -17,12 +17,11 @@ export default async (req, res, next) => {
     });
 
     if (!foundLocation) {
-      sendResponse(res, 404, { message: 'subLocation not found in database' });
-    } else {
-      req.subLocationId = parsedSubLocation;
-      next();
+      return sendResponse(res, 404, { message: 'subLocation not found in database' });
     }
+    req.subLocationId = parsedSubLocation;
+    return next();
   } catch (err) {
-    sendResponse(res, 500, { message: 'Error searching subLocation in database' });
+    return sendResponse(res, 500, { message: 'Error searching subLocation in database' });
   }
 };

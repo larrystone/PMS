@@ -1,6 +1,6 @@
 import sendResponse from '../utils/sendResponse';
 
-const validateId = ({ params }, res, next) => {
+export default ({ params }, res, next) => {
   const { id } = params;
 
   if (Number.parseInt(id, 10)) {
@@ -9,5 +9,3 @@ const validateId = ({ params }, res, next) => {
     sendResponse(res, 422, { message: 'Invalid Location ID provided' });
   }
 };
-
-export default validateId;
