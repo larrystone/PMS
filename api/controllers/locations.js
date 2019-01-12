@@ -1,5 +1,6 @@
 import { Location } from '../models'; //eslint-disable-line
 import sendResponse from '../utils/sendResponse';
+import { validateLocation } from '../utils/validator';
 
 class Locations {
   static async getLocations(req, res) {
@@ -15,6 +16,8 @@ class Locations {
     const { id } = params;
     const depth = Number.parseInt(query.depth, 10) || 1;
 
+    const maxDepth = depth > 4 ? 4 : depth;
+
     let include = {
       include: [
         {
@@ -24,7 +27,7 @@ class Locations {
       ],
     };
 
-    for (let i = 1; i < depth; i += 1) {
+    for (let i = 1; i < maxDepth; i += 1) {
       include = {
         include: [{
           model: Location,
@@ -42,7 +45,7 @@ class Locations {
         });
       if (data) {
         sendResponse(res, 200, {
-          message: 'Success!',
+          message: 'Success!. Max depth of 4 supported',
           data,
         });
       } else {
@@ -53,15 +56,26 @@ class Locations {
     }
   }
 
-  static async createLocation(req, res) {
+  static async createLocation({ body }, res) {
+    const parsedData = validateLocation(body);
+    if (!parsedData) {
+      sendResponse(res, 400, { message: 'Invalid location data provided!' });
+    }
     const {
       name, male, female, subLocation,
-    } = req.body;
+    } = parsedData;
 
     try {
-      let { subLocationId } = req.body;
+      let { subLocationId } = parsedData;
+
       if (subLocation) {
-        const { name: subName, ...defaults } = subLocation;
+        const parsedSubData = validateLocation(subLocation);
+
+        if (!parsedSubData) {
+          sendResponse(res, 400, { message: 'Invalid sub location data provided!' });
+        }
+
+        const { name: subName, ...defaults } = parsedSubData;
         const [data] = await Location.findOrCreate({
           where: {
             name: subName,
@@ -70,6 +84,7 @@ class Locations {
         });
         subLocationId = data.id;
       }
+
       const [data, created] = await Location.findOrCreate({
         where: {
           name,
@@ -88,9 +103,15 @@ class Locations {
   }
 
   static async updateLocation({ body, params }, res) {
+    const parsedData = validateLocation(body);
+    if (!parsedData) {
+      sendResponse(res, 400, { message: 'Invalid location data provided!' });
+    }
+
     const {
       name, male, female, subLocationId,
-    } = body;
+    } = parsedData;
+
     const { id } = params;
 
     try {

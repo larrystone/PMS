@@ -1,5 +1,6 @@
 import express from 'express';
 import Locations from './controllers/locations';
+import validateId from './middlewares/inputValidator';
 
 const routes = express.Router();
 
@@ -10,6 +11,7 @@ routes
 
 routes
   .route('/locations/:id')
+  .all(validateId)
   .get(Locations.getLocation)
   .patch(Locations.updateLocation)
   .delete(Locations.deleteLocation);
