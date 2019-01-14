@@ -3,5 +3,10 @@
     "env",
     "stage-0",
   ],
-  "plugins": ["transform-runtime"]
+  "plugins": [
+    "transform-runtime"
+  ],
+  "ignore": [
+    "**/*.test.js"
+  ]
 }
